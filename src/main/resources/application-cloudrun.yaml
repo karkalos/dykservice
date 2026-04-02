@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    gcp:
+      sql:
+        enabled: true
+        database-name: ${CLOUD_SQL_DATABASE_NAME:dykservice_db}
+        instance-connection-name: ${CLOUD_SQL_CONNECTION_NAME:proven-country-479800-f7:europe-west2:prod-shared-db}
+  datasource:
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS}
+    hikari:
+      maximum-pool-size: 2
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+server:
+  forward-headers-strategy: framework

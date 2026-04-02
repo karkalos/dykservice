@@ -1,0 +1,25 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  application:
+    name: dykservice
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/dykservice}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+
+management:
+  server:
+    port: 8081
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info
