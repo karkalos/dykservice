@@ -18,6 +18,7 @@ public class BookingService {
   private final CustomerRepository customerRepository;
   private final ServiceOrderRepository orderRepository;
   private final OrderEventRepository eventRepository;
+  private final EmailService emailService;
 
   @Transactional
   public String createBooking(CreateBookingRequest req) {
@@ -54,6 +55,7 @@ public class BookingService {
         .build());
 
     eventRepository.insert(orderId, "created", "Order skapad via webben", "system");
+    emailService.sendBookingConfirmation(req.customerEmail(), req.customerName(), orderId);
     return orderId;
   }
 }

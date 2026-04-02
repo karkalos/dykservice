@@ -1,5 +1,6 @@
 package se.dykservice.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -31,5 +32,24 @@ public class CustomerRepository {
         .param("orgNr", customer.orgNr())
         .update();
     return id;
+  }
+
+  public Optional<Customer> findById(UUID id) {
+    return jdbcClient
+        .sql("SELECT * FROM customers WHERE id = :id")
+        .param("id", id)
+        .query((rs, _) -> Customer.builder()
+            .id(rs.getObject("id", UUID.class))
+            .name(rs.getString("name"))
+            .email(rs.getString("email"))
+            .phone(rs.getString("phone"))
+            .street(rs.getString("street"))
+            .postalCode(rs.getString("postal_code"))
+            .city(rs.getString("city"))
+            .isBusiness(rs.getBoolean("is_business"))
+            .company(rs.getString("company"))
+            .orgNr(rs.getString("org_nr"))
+            .build())
+        .optional();
   }
 }
