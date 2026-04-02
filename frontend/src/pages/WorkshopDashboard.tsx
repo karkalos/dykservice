@@ -54,6 +54,9 @@ export default function WorkshopDashboard() {
           <Link to="/verkstad/fakturor" className="btn-outline" style={{ textDecoration: 'none' }}>
             Fakturor
           </Link>
+          <Link to="/verkstad/lager" className="btn-outline" style={{ textDecoration: 'none' }}>
+            Lager
+          </Link>
         </div>
       </div>
 

@@ -70,6 +70,12 @@ export const api = {
       headers: { 'Authorization': `Basic ${creds}` },
     })
   },
+  adminGetInventory: () => request<any[]>('/v1/admin/inventory', { headers: getAuthHeader() }),
+  adminGetLowStock: () => request<any[]>('/v1/admin/inventory/low-stock', { headers: getAuthHeader() }),
+  adminCreateInventoryItem: (data: any) => request<any>('/v1/admin/inventory', { method: 'POST', body: JSON.stringify(data), headers: getAuthHeader() }),
+  adminAdjustQuantity: (id: string, delta: number) => request<any>(`/v1/admin/inventory/${id}/quantity`, { method: 'PATCH', body: JSON.stringify({ delta }), headers: getAuthHeader() }),
+  adminUpdateInventoryItem: (id: string, data: any) => request<any>(`/v1/admin/inventory/${id}`, { method: 'PUT', body: JSON.stringify(data), headers: getAuthHeader() }),
+  adminDeleteInventoryItem: (id: string) => request<any>(`/v1/admin/inventory/${id}`, { method: 'DELETE', headers: getAuthHeader() }),
   adminLogout: () => { localStorage.removeItem('adminAuth') },
   isAdminLoggedIn: () => !!localStorage.getItem('adminAuth'),
 };
