@@ -3,3 +3,5 @@ spring:
     gcp:
       sql:
         enabled: false
+  flyway:
+    locations: classpath:db/test-migration
