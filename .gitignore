@@ -41,5 +41,8 @@ build/
 *.tfstate.backup
 *.tfplan
 
+### Frontend ###
+frontend/node_modules/
+
 ### Frontend build output ###
 src/main/resources/static/
