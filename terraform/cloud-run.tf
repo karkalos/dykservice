@@ -9,6 +9,11 @@ resource "google_cloud_run_v2_service" "app" {
       image = "gcr.io/${var.project_id}/${var.service_name}"
 
       env {
+        name  = "SPRING_PROFILES_ACTIVE"
+        value = "cloudrun"
+      }
+
+      env {
         name  = "CLOUD_SQL_CONNECTION_NAME"
         value = data.google_sql_database_instance.shared.connection_name
       }
