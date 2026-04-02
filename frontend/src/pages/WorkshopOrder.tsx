@@ -35,12 +35,18 @@ export default function WorkshopOrder() {
   const [invoiceCreating, setInvoiceCreating] = useState(false)
   const [invoiceResult, setInvoiceResult] = useState<any>(null)
 
+  const [timeEntries, setTimeEntries] = useState<any[]>([])
+  const [timeDesc, setTimeDesc] = useState('')
+  const [timeMinutes, setTimeMinutes] = useState(0)
+  const [timeSaving, setTimeSaving] = useState(false)
+
   const fetchData = useCallback(async () => {
     if (!orderId) return
     try {
-      const [o, e] = await Promise.all([api.getOrder(orderId), api.getOrderEvents(orderId)])
+      const [o, e, t] = await Promise.all([api.getOrder(orderId), api.getOrderEvents(orderId), api.getTimeEntries(orderId)])
       setOrder(o)
       setEvents(e)
+      setTimeEntries(t)
       setNewStatus(o.status)
       setLoading(false)
     } catch (e: unknown) {
@@ -95,6 +101,22 @@ export default function WorkshopOrder() {
       setError(err instanceof Error ? err.message : 'Fel vid fakturaskapande')
     }
     setInvoiceCreating(false)
+  }
+
+  const handleAddTime = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!orderId || timeMinutes <= 0) return
+    setTimeSaving(true)
+    setError('')
+    try {
+      await api.addTimeEntry(orderId, timeDesc, timeMinutes)
+      setTimeDesc('')
+      setTimeMinutes(0)
+      await fetchData()
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Fel vid tidsregistrering')
+    }
+    setTimeSaving(false)
   }
 
   if (loading) return <p>Laddar...</p>
@@ -233,6 +255,54 @@ export default function WorkshopOrder() {
             </button>
           </form>
         </div>
+      </div>
+
+      <div className="card" style={{ marginBottom: 24 }}>
+        <h2>Tidsrapportering</h2>
+        {(() => {
+          const totalMin = timeEntries.reduce((sum: number, te: any) => sum + te.minutes, 0)
+          const h = Math.floor(totalMin / 60)
+          const m = totalMin % 60
+          return (
+            <div style={{ marginBottom: 12, fontWeight: 600, fontSize: 14 }}>
+              Totalt: {totalMin} min ({h} timmar {m} min)
+            </div>
+          )
+        })()}
+        {timeEntries.length > 0 && (
+          <table className="table" style={{ marginBottom: 16 }}>
+            <thead>
+              <tr>
+                <th>Beskrivning</th>
+                <th>Minuter</th>
+                <th>Datum</th>
+              </tr>
+            </thead>
+            <tbody>
+              {timeEntries.map((te: any) => (
+                <tr key={te.id}>
+                  <td>{te.description || '-'}</td>
+                  <td>{te.minutes}</td>
+                  <td>{new Date(te.createdAt).toLocaleString('sv-SE')}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        <h3 style={{ marginBottom: 8 }}>Lagg till tid</h3>
+        <form onSubmit={handleAddTime} style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
+          <div style={{ flex: 1 }}>
+            <label className="label">Beskrivning</label>
+            <input className="input" value={timeDesc} onChange={e => setTimeDesc(e.target.value)} placeholder="Vad gjordes?" />
+          </div>
+          <div style={{ width: 100 }}>
+            <label className="label">Minuter</label>
+            <input className="input" type="number" min={1} value={timeMinutes || ''} onChange={e => setTimeMinutes(Number(e.target.value))} />
+          </div>
+          <button type="submit" className="btn-success" disabled={timeSaving || timeMinutes <= 0} style={{ height: 40 }}>
+            {timeSaving ? 'Sparar...' : 'Spara'}
+          </button>
+        </form>
       </div>
 
       <h2>Händelser</h2>

@@ -24,5 +24,7 @@ public record ServiceOrder(
     String diagnosisItems,
     Integer diagnosisPrice,
     boolean diagnosisApproved,
+    int priority,
+    Integer estimatedMinutes,
     Instant createdAt,
     Instant updatedAt) {}

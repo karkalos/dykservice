@@ -80,6 +80,10 @@ export const api = {
   adminSearchCustomers: (q: string) => request<any[]>(`/v1/admin/customers/search?q=${encodeURIComponent(q)}`, { headers: getAuthHeader() }),
   adminGetCustomer: (id: string) => request<any>(`/v1/admin/customers/${id}`, { headers: getAuthHeader() }),
   adminUpdateCustomer: (id: string, data: any) => request<any>(`/v1/admin/customers/${id}`, { method: 'PUT', body: JSON.stringify(data), headers: getAuthHeader() }),
+  getTimeEntries: (orderId: string) => request<any[]>(`/v1/orders/${orderId}/time`),
+  addTimeEntry: (orderId: string, description: string, minutes: number) =>
+    request<any>(`/v1/admin/orders/${orderId}/time`, { method: 'POST', body: JSON.stringify({ description, minutes }), headers: getAuthHeader() }),
+  adminGetDashboardStats: () => request<any>('/v1/admin/dashboard/stats', { headers: getAuthHeader() }),
   adminLogout: () => { localStorage.removeItem('adminAuth') },
   isAdminLoggedIn: () => !!localStorage.getItem('adminAuth'),
 };

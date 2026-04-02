@@ -129,8 +129,45 @@ public class ServiceOrderRepository {
         .diagnosisItems(rs.getString("diagnosis_items"))
         .diagnosisPrice(rs.getObject("diagnosis_price") != null ? rs.getInt("diagnosis_price") : null)
         .diagnosisApproved(rs.getBoolean("diagnosis_approved"))
+        .priority(rs.getInt("priority"))
+        .estimatedMinutes(rs.getObject("estimated_minutes") != null ? rs.getInt("estimated_minutes") : null)
         .createdAt(rs.getTimestamp("created_at").toInstant())
         .updatedAt(rs.getTimestamp("updated_at").toInstant())
         .build();
+  }
+
+  public void updatePriority(String id, int priority) {
+    jdbcClient
+        .sql("UPDATE service_orders SET priority = :priority, updated_at = NOW() WHERE id = :id")
+        .param("id", id)
+        .param("priority", priority)
+        .update();
+  }
+
+  public int countByStatusNotIn(List<String> statuses) {
+    return jdbcClient
+        .sql("SELECT COUNT(*) FROM service_orders WHERE status NOT IN (:statuses)")
+        .param("statuses", statuses)
+        .query(Integer.class)
+        .single();
+  }
+
+  public int countCreatedToday() {
+    return jdbcClient
+        .sql("SELECT COUNT(*) FROM service_orders WHERE CAST(created_at AS DATE) = CURRENT_DATE")
+        .query(Integer.class)
+        .single();
+  }
+
+  public java.util.Map<String, Integer> countByStatus() {
+    var result = new java.util.LinkedHashMap<String, Integer>();
+    jdbcClient
+        .sql("SELECT status, COUNT(*) as cnt FROM service_orders GROUP BY status")
+        .query((rs, _) -> {
+          result.put(rs.getString("status"), rs.getInt("cnt"));
+          return null;
+        })
+        .list();
+    return result;
   }
 }

@@ -11,6 +11,7 @@ public class DatabaseCleanerExtension implements BeforeEachCallback {
   public void beforeEach(ExtensionContext context) {
     var appContext = SpringExtension.getApplicationContext(context);
     var jdbc = appContext.getBean(JdbcClient.class);
+    jdbc.sql("DELETE FROM time_entries").update();
     jdbc.sql("DELETE FROM invoices").update();
     jdbc.sql("DELETE FROM order_events").update();
     jdbc.sql("DELETE FROM service_orders").update();

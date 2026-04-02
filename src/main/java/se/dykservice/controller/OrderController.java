@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import se.dykservice.domain.TimeEntry;
 import se.dykservice.dto.DiagnosisRequest;
 import se.dykservice.dto.OrderEventResponse;
 import se.dykservice.dto.OrderResponse;
 import se.dykservice.dto.UpdateStatusRequest;
+import se.dykservice.repository.TimeEntryRepository;
 import se.dykservice.service.OrderService;
 
 @RestController
@@ -17,6 +19,7 @@ import se.dykservice.service.OrderService;
 public class OrderController {
 
   private final OrderService orderService;
+  private final TimeEntryRepository timeEntryRepository;
 
   @GetMapping
   List<OrderResponse> listOrders() {
@@ -49,5 +52,10 @@ public class OrderController {
   Map<String, String> approveDiagnosis(@PathVariable String orderId) {
     orderService.approveDiagnosis(orderId);
     return Map.of("status", "approved");
+  }
+
+  @GetMapping("/{orderId}/time")
+  List<TimeEntry> getTimeEntries(@PathVariable String orderId) {
+    return timeEntryRepository.findByOrderId(orderId);
   }
 }
