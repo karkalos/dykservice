@@ -13,6 +13,12 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
+function getAuthHeader(): HeadersInit {
+  const creds = localStorage.getItem('adminAuth')
+  if (!creds) return {}
+  return { 'Authorization': `Basic ${creds}` }
+}
+
 export const api = {
   getWorkshops: () => request<Workshop[]>('/v1/workshops'),
   getWorkshop: (id: string) => request<Workshop>(`/v1/workshops/${id}`),
@@ -25,6 +31,34 @@ export const api = {
   getOrderEvents: (id: string) => request<OrderEventResponse[]>(`/v1/orders/${id}/events`),
   updateOrderStatus: (id: string, status: string, message: string) =>
     request<void>(`/v1/orders/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status, message }) }),
+  adminGetServices: () =>
+    request<ServiceItemResponse[]>('/v1/admin/services', { headers: getAuthHeader() }),
+  adminUpdatePrice: (id: string, price: number) =>
+    request<{ status: string }>(`/v1/admin/services/${id}/price`, {
+      method: 'PATCH',
+      body: JSON.stringify({ price }),
+      headers: getAuthHeader(),
+    }),
+  adminCreateService: (data: { category: string; name: string; nameSv: string; basePrice: number; notes: string }) =>
+    request<{ id: string }>('/v1/admin/services', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: getAuthHeader(),
+    }),
+  adminDeleteService: (id: string) =>
+    request<{ status: string }>(`/v1/admin/services/${id}`, {
+      method: 'DELETE',
+      headers: getAuthHeader(),
+    }),
+  adminLogin: (username: string, password: string) => {
+    const creds = btoa(`${username}:${password}`)
+    localStorage.setItem('adminAuth', creds)
+    return request<ServiceItemResponse[]>('/v1/admin/services', {
+      headers: { 'Authorization': `Basic ${creds}` },
+    })
+  },
+  adminLogout: () => { localStorage.removeItem('adminAuth') },
+  isAdminLoggedIn: () => !!localStorage.getItem('adminAuth'),
 };
 
 export interface ServiceItemResponse {

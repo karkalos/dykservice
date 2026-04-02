@@ -5,3 +5,8 @@ spring:
         enabled: false
   flyway:
     locations: classpath:db/test-migration
+
+app:
+  admin:
+    username: admin
+    password: admin123

@@ -42,8 +42,15 @@ export default function WorkshopDashboard() {
 
   return (
     <div>
-      <h1>Verkstadspanel</h1>
-      <p style={{ color: '#666', marginBottom: 24 }}>{orders.length} ordrar totalt</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <div>
+          <h1>Verkstadspanel</h1>
+          <p style={{ color: '#666' }}>{orders.length} ordrar totalt</p>
+        </div>
+        <Link to="/verkstad/tjanster" className="btn-outline" style={{ textDecoration: 'none' }}>
+          Hantera tjanster
+        </Link>
+      </div>
 
       {orders.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', color: '#888' }}>

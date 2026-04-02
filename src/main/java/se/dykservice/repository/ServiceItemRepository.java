@@ -46,6 +46,38 @@ public class ServiceItemRepository {
         .list();
   }
 
+  public void updatePrice(String id, int newPrice) {
+    jdbcClient
+        .sql("UPDATE service_items SET base_price = :price WHERE id = :id")
+        .param("price", newPrice)
+        .param("id", id)
+        .update();
+  }
+
+  public void insert(ServiceItem item) {
+    jdbcClient
+        .sql("""
+            INSERT INTO service_items (id, workshop_id, category, name, name_sv, base_price, notes, in_stock)
+            VALUES (:id, :workshopId, :category, :name, :nameSv, :basePrice, :notes, :inStock)
+            """)
+        .param("id", item.id())
+        .param("workshopId", item.workshopId())
+        .param("category", item.category())
+        .param("name", item.name())
+        .param("nameSv", item.nameSv())
+        .param("basePrice", item.basePrice())
+        .param("notes", item.notes())
+        .param("inStock", item.inStock())
+        .update();
+  }
+
+  public void deleteById(String id) {
+    jdbcClient
+        .sql("DELETE FROM service_items WHERE id = :id")
+        .param("id", id)
+        .update();
+  }
+
   private ServiceItem mapRow(ResultSet rs) throws SQLException {
     return ServiceItem.builder()
         .id(rs.getString("id"))

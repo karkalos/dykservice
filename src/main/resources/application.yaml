@@ -16,6 +16,11 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
 
+app:
+  admin:
+    username: ${ADMIN_USERNAME:admin}
+    password: ${ADMIN_PASSWORD:admin123}
+
 management:
   server:
     port: 8081

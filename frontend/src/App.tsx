@@ -7,6 +7,7 @@ import StatusLookup from './pages/StatusLookup'
 import StatusDetail from './pages/StatusDetail'
 import WorkshopDashboard from './pages/WorkshopDashboard'
 import WorkshopOrder from './pages/WorkshopOrder'
+import AdminServices from './pages/AdminServices'
 
 export default function App() {
   const location = useLocation()
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="/status" element={<StatusLookup />} />
         <Route path="/status/:orderId" element={<StatusDetail />} />
         <Route path="/verkstad" element={<WorkshopDashboard />} />
+        <Route path="/verkstad/tjanster" element={<AdminServices />} />
         <Route path="/verkstad/:orderId" element={<WorkshopOrder />} />
       </Routes>
     </div>
