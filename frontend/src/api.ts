@@ -57,6 +57,12 @@ export const api = {
     }),
   approveDiagnosis: (orderId: string) =>
     request<any>(`/v1/orders/${orderId}/approve`, { method: 'POST' }),
+  adminGetInvoices: () => request<any[]>('/v1/admin/invoices', { headers: getAuthHeader() }),
+  adminGetUnpaidInvoices: () => request<any[]>('/v1/admin/invoices/unpaid', { headers: getAuthHeader() }),
+  adminGenerateInvoice: (orderId: string) =>
+    request<any>(`/v1/admin/invoices/generate/${orderId}`, { method: 'POST', headers: getAuthHeader() }),
+  adminMarkInvoicePaid: (id: string) =>
+    request<any>(`/v1/admin/invoices/${id}/paid`, { method: 'POST', headers: getAuthHeader() }),
   adminLogin: (username: string, password: string) => {
     const creds = btoa(`${username}:${password}`)
     localStorage.setItem('adminAuth', creds)

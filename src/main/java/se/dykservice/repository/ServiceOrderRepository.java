@@ -86,6 +86,14 @@ public class ServiceOrderRepository {
         .update();
   }
 
+  public void updatePaymentStatus(String id, String status) {
+    jdbcClient
+        .sql("UPDATE service_orders SET payment_status = :status, updated_at = NOW() WHERE id = :id")
+        .param("id", id)
+        .param("status", status)
+        .update();
+  }
+
   public void approveDiagnosis(String id) {
     jdbcClient
         .sql("UPDATE service_orders SET diagnosis_approved = true, updated_at = NOW() WHERE id = :id")

@@ -32,6 +32,9 @@ export default function WorkshopOrder() {
   const [diagPrice, setDiagPrice] = useState(0)
   const [diagSubmitting, setDiagSubmitting] = useState(false)
 
+  const [invoiceCreating, setInvoiceCreating] = useState(false)
+  const [invoiceResult, setInvoiceResult] = useState<any>(null)
+
   const fetchData = useCallback(async () => {
     if (!orderId) return
     try {
@@ -78,6 +81,20 @@ export default function WorkshopOrder() {
       setError(err instanceof Error ? err.message : 'Fel vid inskickning av diagnos')
     }
     setDiagSubmitting(false)
+  }
+
+  const handleGenerateInvoice = async () => {
+    if (!orderId) return
+    setInvoiceCreating(true)
+    setError('')
+    try {
+      const inv = await api.adminGenerateInvoice(orderId)
+      setInvoiceResult(inv)
+      await fetchData()
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Fel vid fakturaskapande')
+    }
+    setInvoiceCreating(false)
   }
 
   if (loading) return <p>Laddar...</p>
@@ -138,6 +155,30 @@ export default function WorkshopOrder() {
               {order.diagnosisApproved ? 'Kunden har godkänt' : 'Väntar på kundens godkännande'}
             </span>
           </div>
+        </div>
+      )}
+
+      {(order.status === 'ready' || order.status === 'returned') && !invoiceResult && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <h2>Faktura</h2>
+          <p style={{ marginBottom: 12, fontSize: 14, color: '#555' }}>Ordern är klar. Skapa en faktura till kunden.</p>
+          <button className="btn-success" onClick={handleGenerateInvoice} disabled={invoiceCreating}>
+            {invoiceCreating ? 'Skapar...' : 'Skapa faktura'}
+          </button>
+        </div>
+      )}
+
+      {invoiceResult && (
+        <div className="card" style={{ marginBottom: 24, background: '#d4edda', border: '1px solid #28a745' }}>
+          <h2>Faktura skapad</h2>
+          <table style={{ fontSize: 14 }}>
+            <tbody>
+              <tr><td style={{ padding: '4px 16px 4px 0', color: '#555', fontWeight: 500 }}>Fakturanr</td><td>{invoiceResult.invoiceNumber}</td></tr>
+              <tr><td style={{ padding: '4px 16px 4px 0', color: '#555', fontWeight: 500 }}>Belopp</td><td>{invoiceResult.total} kr</td></tr>
+              <tr><td style={{ padding: '4px 16px 4px 0', color: '#555', fontWeight: 500 }}>Varav moms</td><td>{invoiceResult.vatAmount} kr</td></tr>
+              <tr><td style={{ padding: '4px 16px 4px 0', color: '#555', fontWeight: 500 }}>Förfallodatum</td><td>{invoiceResult.dueDate || '-'}</td></tr>
+            </tbody>
+          </table>
         </div>
       )}
 

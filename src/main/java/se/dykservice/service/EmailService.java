@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import java.util.Map;
 import java.util.List;
+import se.dykservice.domain.Invoice;
 
 @Service
 @Slf4j
@@ -102,6 +103,30 @@ public class EmailService {
                 <p style="color: #888; font-size: 13px; margin-top: 40px;">DykService — Din Marina Dräktverkstad</p>
             </div>
             """.formatted(customerName, findings, updatedPrice, orderId);
+        send(toEmail, subject, html);
+    }
+
+    public void sendInvoice(String toEmail, String customerName, Invoice invoice) {
+        String subject = "Faktura " + invoice.invoiceNumber() + " — " + invoice.orderId();
+        String html = """
+            <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #1a1a2e;">Faktura %s</h2>
+                <p>Hej %s, här kommer din faktura.</p>
+                <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <table style="width: 100%%; font-size: 14px;">
+                        <tr><td style="color: #888;">Order</td><td style="text-align: right;">%s</td></tr>
+                        <tr><td style="color: #888;">Belopp</td><td style="text-align: right; font-weight: 700;">%d kr</td></tr>
+                        <tr><td style="color: #888;">Varav moms (25%%)</td><td style="text-align: right;">%d kr</td></tr>
+                        <tr><td style="color: #888;">Förfallodatum</td><td style="text-align: right;">%s</td></tr>
+                        <tr><td style="color: #888;">Betalning</td><td style="text-align: right;">%s</td></tr>
+                    </table>
+                </div>
+                <p style="color: #888; font-size: 13px; margin-top: 40px;">DykService — Din Marina Dräktverkstad</p>
+            </div>
+            """.formatted(invoice.invoiceNumber(), customerName, invoice.orderId(),
+                invoice.total(), invoice.vatAmount(),
+                invoice.dueDate() != null ? invoice.dueDate().toString() : "—",
+                invoice.paymentMethod());
         send(toEmail, subject, html);
     }
 

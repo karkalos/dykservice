@@ -8,6 +8,7 @@ import StatusDetail from './pages/StatusDetail'
 import WorkshopDashboard from './pages/WorkshopDashboard'
 import WorkshopOrder from './pages/WorkshopOrder'
 import AdminServices from './pages/AdminServices'
+import AdminInvoices from './pages/AdminInvoices'
 
 export default function App() {
   const location = useLocation()
@@ -47,6 +48,7 @@ export default function App() {
         <Route path="/status/:orderId" element={<StatusDetail />} />
         <Route path="/verkstad" element={<WorkshopDashboard />} />
         <Route path="/verkstad/tjanster" element={<AdminServices />} />
+        <Route path="/verkstad/fakturor" element={<AdminInvoices />} />
         <Route path="/verkstad/:orderId" element={<WorkshopOrder />} />
       </Routes>
     </div>

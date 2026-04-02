@@ -47,9 +47,14 @@ export default function WorkshopDashboard() {
           <h1>Verkstadspanel</h1>
           <p style={{ color: '#666' }}>{orders.length} ordrar totalt</p>
         </div>
-        <Link to="/verkstad/tjanster" className="btn-outline" style={{ textDecoration: 'none' }}>
-          Hantera tjanster
-        </Link>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Link to="/verkstad/tjanster" className="btn-outline" style={{ textDecoration: 'none' }}>
+            Hantera tjanster
+          </Link>
+          <Link to="/verkstad/fakturor" className="btn-outline" style={{ textDecoration: 'none' }}>
+            Fakturor
+          </Link>
+        </div>
       </div>
 
       {orders.length === 0 ? (
