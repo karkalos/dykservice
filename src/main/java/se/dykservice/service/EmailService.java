@@ -77,6 +77,34 @@ public class EmailService {
         send(toEmail, subject, html);
     }
 
+    public void sendDiagnosisApproval(String toEmail, String customerName, String orderId,
+            String findings, int updatedPrice) {
+        String subject = "Diagnos klar — godkänn arbete — " + orderId;
+        String html = """
+            <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #1a1a2e;">Diagnos av din dräkt</h2>
+                <p>Hej %s, vi har undersökt din dräkt och hittat följande:</p>
+                <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <div style="font-size: 14px; white-space: pre-wrap;">%s</div>
+                </div>
+                <div style="background: #1a1a2e; color: #fff; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0;">
+                    <div style="font-size: 13px; opacity: 0.7;">Uppskattat pris</div>
+                    <div style="font-size: 28px; font-weight: 700;">%d kr</div>
+                </div>
+                <p>Godkänn så påbörjar vi arbetet:</p>
+                <p style="text-align: center; margin: 30px 0;">
+                    <a href="https://dykservice-v5k7fnjf3a-nw.a.run.app/status/%s?approve=true"
+                       style="background: #28a745; color: #fff; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px;">
+                        Godkänn arbete
+                    </a>
+                </p>
+                <p style="color: #888; font-size: 13px;">Vill du diskutera först? Ring oss eller svara på detta mail.</p>
+                <p style="color: #888; font-size: 13px; margin-top: 40px;">DykService — Din Marina Dräktverkstad</p>
+            </div>
+            """.formatted(customerName, findings, updatedPrice, orderId);
+        send(toEmail, subject, html);
+    }
+
     private void send(String to, String subject, String html) {
         if (!enabled) {
             log.info("Email disabled — would send to {}: {}", to, subject);

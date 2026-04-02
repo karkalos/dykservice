@@ -50,6 +50,13 @@ export const api = {
       method: 'DELETE',
       headers: getAuthHeader(),
     }),
+  submitDiagnosis: (orderId: string, findings: string, recommendedItems: string, updatedPrice: number) =>
+    request<any>(`/v1/orders/${orderId}/diagnosis`, {
+      method: 'POST',
+      body: JSON.stringify({ findings, recommendedItems, updatedPrice }),
+    }),
+  approveDiagnosis: (orderId: string) =>
+    request<any>(`/v1/orders/${orderId}/approve`, { method: 'POST' }),
   adminLogin: (username: string, password: string) => {
     const creds = btoa(`${username}:${password}`)
     localStorage.setItem('adminAuth', creds)
@@ -141,6 +148,10 @@ export interface OrderResponse {
   notes: string;
   paymentStatus: string;
   createdAt: string;
+  diagnosisFindings: string | null;
+  diagnosisItems: string | null;
+  diagnosisPrice: number | null;
+  diagnosisApproved: boolean;
 }
 
 export interface OrderEventResponse {

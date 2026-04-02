@@ -27,6 +27,11 @@ export default function WorkshopOrder() {
   const [message, setMessage] = useState('')
   const [updating, setUpdating] = useState(false)
 
+  const [diagFindings, setDiagFindings] = useState('')
+  const [diagItems, setDiagItems] = useState('')
+  const [diagPrice, setDiagPrice] = useState(0)
+  const [diagSubmitting, setDiagSubmitting] = useState(false)
+
   const fetchData = useCallback(async () => {
     if (!orderId) return
     try {
@@ -58,6 +63,23 @@ export default function WorkshopOrder() {
     setUpdating(false)
   }
 
+  const handleDiagnosisSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!orderId) return
+    setDiagSubmitting(true)
+    setError('')
+    try {
+      await api.submitDiagnosis(orderId, diagFindings, diagItems, diagPrice)
+      setDiagFindings('')
+      setDiagItems('')
+      setDiagPrice(0)
+      await fetchData()
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Fel vid inskickning av diagnos')
+    }
+    setDiagSubmitting(false)
+  }
+
   if (loading) return <p>Laddar...</p>
   if (error && !order) return <p className="error">{error}</p>
   if (!order) return <p>Order hittades inte.</p>
@@ -65,6 +87,59 @@ export default function WorkshopOrder() {
   return (
     <div>
       <h1>Order {order.id}</h1>
+
+      {order.status === 'received' && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <h2>Skicka diagnos</h2>
+          <form onSubmit={handleDiagnosisSubmit}>
+            <div style={{ marginBottom: 12 }}>
+              <label className="label">Vad hittade du?</label>
+              <textarea className="input" rows={4} value={diagFindings} onChange={e => setDiagFindings(e.target.value)} style={{ resize: 'vertical' }} required />
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <label className="label">Rekommenderade åtgärder</label>
+              <textarea className="input" rows={3} value={diagItems} onChange={e => setDiagItems(e.target.value)} style={{ resize: 'vertical' }} />
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <label className="label">Uppdaterat pris (kr)</label>
+              <input className="input" type="number" min={0} value={diagPrice} onChange={e => setDiagPrice(Number(e.target.value))} required />
+            </div>
+            {error && <p className="error">{error}</p>}
+            <button type="submit" className="btn-success" disabled={diagSubmitting}>
+              {diagSubmitting ? 'Skickar...' : 'Skicka diagnos till kund'}
+            </button>
+          </form>
+        </div>
+      )}
+
+      {order.status === 'diagnosed' && (
+        <div className="card" style={{ marginBottom: 24 }}>
+          <h2>Diagnos</h2>
+          {order.diagnosisFindings && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 13, color: '#888', fontWeight: 500 }}>Resultat</div>
+              <div style={{ whiteSpace: 'pre-wrap', fontSize: 14 }}>{order.diagnosisFindings}</div>
+            </div>
+          )}
+          {order.diagnosisItems && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 13, color: '#888', fontWeight: 500 }}>Rekommenderade åtgärder</div>
+              <div style={{ whiteSpace: 'pre-wrap', fontSize: 14 }}>{order.diagnosisItems}</div>
+            </div>
+          )}
+          {order.diagnosisPrice != null && (
+            <div style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 13, color: '#888', fontWeight: 500 }}>Uppdaterat pris</div>
+              <div style={{ fontSize: 20, fontWeight: 700 }}>{order.diagnosisPrice} kr</div>
+            </div>
+          )}
+          <div>
+            <span className={`badge ${order.diagnosisApproved ? 'badge-green' : 'badge-yellow'}`}>
+              {order.diagnosisApproved ? 'Kunden har godkänt' : 'Väntar på kundens godkännande'}
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="grid-2" style={{ marginBottom: 24 }}>
         <div className="card">

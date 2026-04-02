@@ -5,11 +5,13 @@ import se.dykservice.domain.ServiceOrder;
 public record OrderResponse(
     String id, String workshopId, String bookingType, String status,
     String suitType, String suitBrand, String items, String urgency,
-    int estimatedPrice, Integer finalPrice, String notes, String paymentStatus, String createdAt) {
+    int estimatedPrice, Integer finalPrice, String notes, String paymentStatus, String createdAt,
+    String diagnosisFindings, String diagnosisItems, Integer diagnosisPrice, boolean diagnosisApproved) {
 
   public static OrderResponse from(ServiceOrder o) {
     return new OrderResponse(o.id(), o.workshopId(), o.bookingType(), o.status(),
         o.suitType(), o.suitBrand(), o.items(), o.urgency(), o.estimatedPrice(),
-        o.finalPrice(), o.notes(), o.paymentStatus(), o.createdAt().toString());
+        o.finalPrice(), o.notes(), o.paymentStatus(), o.createdAt().toString(),
+        o.diagnosisFindings(), o.diagnosisItems(), o.diagnosisPrice(), o.diagnosisApproved());
   }
 }

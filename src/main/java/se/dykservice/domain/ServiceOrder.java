@@ -20,5 +20,9 @@ public record ServiceOrder(
     String notes,
     String paymentMethod,
     String paymentStatus,
+    String diagnosisFindings,
+    String diagnosisItems,
+    Integer diagnosisPrice,
+    boolean diagnosisApproved,
     Instant createdAt,
     Instant updatedAt) {}

@@ -71,6 +71,28 @@ public class ServiceOrderRepository {
         .update();
   }
 
+  public void updateDiagnosis(String id, String findings, String items, int price) {
+    jdbcClient
+        .sql("""
+            UPDATE service_orders
+            SET diagnosis_findings = :findings, diagnosis_items = :items,
+                diagnosis_price = :price, updated_at = NOW()
+            WHERE id = :id
+            """)
+        .param("id", id)
+        .param("findings", findings)
+        .param("items", items)
+        .param("price", price)
+        .update();
+  }
+
+  public void approveDiagnosis(String id) {
+    jdbcClient
+        .sql("UPDATE service_orders SET diagnosis_approved = true, updated_at = NOW() WHERE id = :id")
+        .param("id", id)
+        .update();
+  }
+
   private ServiceOrder mapRow(ResultSet rs) throws SQLException {
     return ServiceOrder.builder()
         .id(rs.getString("id"))
@@ -87,6 +109,10 @@ public class ServiceOrderRepository {
         .notes(rs.getString("notes"))
         .paymentMethod(rs.getString("payment_method"))
         .paymentStatus(rs.getString("payment_status"))
+        .diagnosisFindings(rs.getString("diagnosis_findings"))
+        .diagnosisItems(rs.getString("diagnosis_items"))
+        .diagnosisPrice(rs.getObject("diagnosis_price") != null ? rs.getInt("diagnosis_price") : null)
+        .diagnosisApproved(rs.getBoolean("diagnosis_approved"))
         .createdAt(rs.getTimestamp("created_at").toInstant())
         .updatedAt(rs.getTimestamp("updated_at").toInstant())
         .build();

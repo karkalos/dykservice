@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useState, useEffect, useCallback } from 'react'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { api } from '../api'
 import type { OrderResponse, OrderEventResponse } from '../api'
 
@@ -18,17 +18,49 @@ const STATUS_LABELS: Record<string, string> = {
 
 export default function StatusDetail() {
   const { orderId } = useParams<{ orderId: string }>()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [order, setOrder] = useState<OrderResponse | null>(null)
   const [events, setEvents] = useState<OrderEventResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [approving, setApproving] = useState(false)
+  const [approved, setApproved] = useState(false)
+
+  const fetchData = useCallback(async () => {
+    if (!orderId) return
+    try {
+      const [o, e] = await Promise.all([api.getOrder(orderId), api.getOrderEvents(orderId)])
+      setOrder(o)
+      setEvents(e)
+      setLoading(false)
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Fel')
+      setLoading(false)
+    }
+  }, [orderId])
+
+  useEffect(() => { fetchData() }, [fetchData])
 
   useEffect(() => {
+    if (!orderId || !order) return
+    if (searchParams.get('approve') === 'true' && order.status === 'diagnosed' && !order.diagnosisApproved) {
+      handleApprove()
+      setSearchParams({}, { replace: true })
+    }
+  }, [order, searchParams])
+
+  const handleApprove = async () => {
     if (!orderId) return
-    Promise.all([api.getOrder(orderId), api.getOrderEvents(orderId)])
-      .then(([o, e]) => { setOrder(o); setEvents(e); setLoading(false) })
-      .catch(e => { setError(e.message); setLoading(false) })
-  }, [orderId])
+    setApproving(true)
+    try {
+      await api.approveDiagnosis(orderId)
+      setApproved(true)
+      await fetchData()
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Fel vid godkännande')
+    }
+    setApproving(false)
+  }
 
   if (loading) return <p>Laddar...</p>
   if (error) return <p className="error">{error}</p>
@@ -73,6 +105,39 @@ export default function StatusDetail() {
           )}
         </div>
       </div>
+
+      {order.status === 'diagnosed' && !order.diagnosisApproved && !approved && (
+        <div className="card" style={{ border: '2px solid #28a745', marginBottom: 24 }}>
+          <h2>Diagnos</h2>
+          {order.diagnosisFindings && (
+            <div style={{ background: '#f5f5f5', padding: 16, borderRadius: 8, marginBottom: 16, whiteSpace: 'pre-wrap', fontSize: 14 }}>
+              {order.diagnosisFindings}
+            </div>
+          )}
+          {order.diagnosisPrice != null && (
+            <div style={{ background: '#1a1a2e', color: '#fff', padding: 16, borderRadius: 8, textAlign: 'center', marginBottom: 16 }}>
+              <div style={{ fontSize: 13, opacity: 0.7 }}>Uppskattat pris</div>
+              <div style={{ fontSize: 28, fontWeight: 700 }}>{order.diagnosisPrice} kr</div>
+            </div>
+          )}
+          {error && <p className="error">{error}</p>}
+          <button
+            className="btn-success"
+            style={{ width: '100%', padding: '14px 32px', fontSize: 16, fontWeight: 700 }}
+            onClick={handleApprove}
+            disabled={approving}
+          >
+            {approving ? 'Godkänner...' : 'Godkänn arbete'}
+          </button>
+        </div>
+      )}
+
+      {approved && (
+        <div className="card" style={{ background: '#d4edda', border: '2px solid #28a745', marginBottom: 24, textAlign: 'center' }}>
+          <h2 style={{ color: '#155724' }}>Tack! Arbetet har godkänts.</h2>
+          <p>Vi påbörjar arbetet med din dräkt.</p>
+        </div>
+      )}
 
       <h2>Statusförloppet</h2>
       <div className="card">
