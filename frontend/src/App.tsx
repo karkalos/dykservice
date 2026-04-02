@@ -10,6 +10,8 @@ import WorkshopOrder from './pages/WorkshopOrder'
 import AdminServices from './pages/AdminServices'
 import AdminInvoices from './pages/AdminInvoices'
 import AdminInventory from './pages/AdminInventory'
+import AdminCustomers from './pages/AdminCustomers'
+import AdminCustomerDetail from './pages/AdminCustomerDetail'
 
 export default function App() {
   const location = useLocation()
@@ -51,6 +53,8 @@ export default function App() {
         <Route path="/verkstad/tjanster" element={<AdminServices />} />
         <Route path="/verkstad/fakturor" element={<AdminInvoices />} />
         <Route path="/verkstad/lager" element={<AdminInventory />} />
+        <Route path="/verkstad/kunder" element={<AdminCustomers />} />
+        <Route path="/verkstad/kunder/:id" element={<AdminCustomerDetail />} />
         <Route path="/verkstad/:orderId" element={<WorkshopOrder />} />
       </Routes>
     </div>

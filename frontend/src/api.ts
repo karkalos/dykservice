@@ -76,6 +76,10 @@ export const api = {
   adminAdjustQuantity: (id: string, delta: number) => request<any>(`/v1/admin/inventory/${id}/quantity`, { method: 'PATCH', body: JSON.stringify({ delta }), headers: getAuthHeader() }),
   adminUpdateInventoryItem: (id: string, data: any) => request<any>(`/v1/admin/inventory/${id}`, { method: 'PUT', body: JSON.stringify(data), headers: getAuthHeader() }),
   adminDeleteInventoryItem: (id: string) => request<any>(`/v1/admin/inventory/${id}`, { method: 'DELETE', headers: getAuthHeader() }),
+  adminGetCustomers: () => request<any[]>('/v1/admin/customers', { headers: getAuthHeader() }),
+  adminSearchCustomers: (q: string) => request<any[]>(`/v1/admin/customers/search?q=${encodeURIComponent(q)}`, { headers: getAuthHeader() }),
+  adminGetCustomer: (id: string) => request<any>(`/v1/admin/customers/${id}`, { headers: getAuthHeader() }),
+  adminUpdateCustomer: (id: string, data: any) => request<any>(`/v1/admin/customers/${id}`, { method: 'PUT', body: JSON.stringify(data), headers: getAuthHeader() }),
   adminLogout: () => { localStorage.removeItem('adminAuth') },
   isAdminLoggedIn: () => !!localStorage.getItem('adminAuth'),
 };

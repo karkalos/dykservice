@@ -101,6 +101,14 @@ public class ServiceOrderRepository {
         .update();
   }
 
+  public List<ServiceOrder> findByCustomerId(UUID customerId) {
+    return jdbcClient
+        .sql("SELECT * FROM service_orders WHERE customer_id = :customerId ORDER BY created_at DESC")
+        .param("customerId", customerId)
+        .query((rs, _) -> mapRow(rs))
+        .list();
+  }
+
   private ServiceOrder mapRow(ResultSet rs) throws SQLException {
     return ServiceOrder.builder()
         .id(rs.getString("id"))

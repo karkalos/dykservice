@@ -14,4 +14,5 @@ public record Customer(
     String city,
     boolean isBusiness,
     String company,
-    String orgNr) {}
+    String orgNr,
+    String notes) {}
