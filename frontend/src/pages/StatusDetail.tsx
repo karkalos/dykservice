@@ -54,7 +54,7 @@ export default function StatusDetail() {
             </span>
           </div>
           <div>
-            <div style={{ fontSize: 13, color: '#888' }}>Drakt</div>
+            <div style={{ fontSize: 13, color: '#888' }}>Dräkt</div>
             <div>{order.suitType || '-'} {order.suitBrand ? `(${order.suitBrand})` : ''}</div>
           </div>
           <div>
@@ -67,14 +67,14 @@ export default function StatusDetail() {
           </div>
           {order.urgency && order.urgency !== 'standard' && (
             <div>
-              <div style={{ fontSize: 13, color: '#888' }}>Bradskaniva</div>
+              <div style={{ fontSize: 13, color: '#888' }}>Brådskanivå</div>
               <span className="badge badge-yellow">{order.urgency === 'priority' ? 'Prioriterad' : 'Akut'}</span>
             </div>
           )}
         </div>
       </div>
 
-      <h2>Statusforloppet</h2>
+      <h2>Statusförloppet</h2>
       <div className="card">
         <div style={{ position: 'relative', paddingLeft: 32 }}>
           {ALL_STATUSES.map((status, i) => {

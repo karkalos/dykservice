@@ -7,7 +7,7 @@ export default function BookingConfirmation() {
   return (
     <div style={{ textAlign: 'center', padding: '60px 0' }}>
       <div style={{ fontSize: 48, marginBottom: 16 }}>&#10003;</div>
-      <h1>Tack for din bokning!</h1>
+      <h1>Tack för din bokning!</h1>
       <p style={{ color: '#666', marginBottom: 24, fontSize: 16 }}>
         Din bokning har registrerats.
       </p>
@@ -19,7 +19,7 @@ export default function BookingConfirmation() {
       )}
       {orderId && (
         <Link to={`/status/${orderId}`} className="btn" style={{ textDecoration: 'none', display: 'inline-block' }}>
-          Spara din order &rarr;
+          Spåra din order &rarr;
         </Link>
       )}
     </div>

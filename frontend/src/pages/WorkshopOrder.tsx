@@ -73,9 +73,9 @@ export default function WorkshopOrder() {
             <tbody>
               {[
                 ['Verkstad', order.workshopId],
-                ['Typ', order.bookingType === 'mail_in' ? 'Postforskickning' : 'Besok'],
-                ['Drakt', `${order.suitType || '-'} ${order.suitBrand ? `(${order.suitBrand})` : ''}`],
-                ['Bradskaniva', order.urgency || 'standard'],
+                ['Typ', order.bookingType === 'mail_in' ? 'Postförskickning' : 'Besök'],
+                ['Dräkt', `${order.suitType || '-'} ${order.suitBrand ? `(${order.suitBrand})` : ''}`],
+                ['Brådskanivå', order.urgency || 'standard'],
                 ['Uppskattat pris', `${order.estimatedPrice} kr`],
                 ['Slutpris', order.finalPrice != null ? `${order.finalPrice} kr` : '-'],
                 ['Betalstatus', order.paymentStatus || '-'],
@@ -119,10 +119,10 @@ export default function WorkshopOrder() {
         </div>
       </div>
 
-      <h2>Handelser</h2>
+      <h2>Händelser</h2>
       <div className="card">
         {events.length === 0 ? (
-          <p style={{ color: '#888' }}>Inga handelser annu.</p>
+          <p style={{ color: '#888' }}>Inga händelser ännu.</p>
         ) : (
           <div style={{ position: 'relative', paddingLeft: 32 }}>
             {events.map((ev, i) => (

@@ -16,6 +16,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export const api = {
   getWorkshops: () => request<Workshop[]>('/v1/workshops'),
   getWorkshop: (id: string) => request<Workshop>(`/v1/workshops/${id}`),
+  getMyWorkshop: () => request<Workshop>('/v1/workshops/subnautica'),
   calculatePrices: (services: { serviceName: string; quantity: number }[], urgency: string) =>
     request<PriceResult[]>('/v1/pricing/calculate', { method: 'POST', body: JSON.stringify({ services, urgency }) }),
   createBooking: (data: CreateBookingRequest) => request<{ orderId: string }>('/v1/bookings', { method: 'POST', body: JSON.stringify(data) }),

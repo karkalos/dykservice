@@ -47,7 +47,7 @@ export default function WorkshopDashboard() {
 
       {orders.length === 0 ? (
         <div className="card" style={{ textAlign: 'center', color: '#888' }}>
-          Inga ordrar annu.
+          Inga ordrar ännu.
         </div>
       ) : (
         <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
@@ -55,9 +55,9 @@ export default function WorkshopDashboard() {
             <thead>
               <tr>
                 <th>Order-ID</th>
-                <th>Drakt</th>
+                <th>Dräkt</th>
                 <th>Status</th>
-                <th>Bradskaniva</th>
+                <th>Brådskanivå</th>
                 <th>Skapad</th>
               </tr>
             </thead>

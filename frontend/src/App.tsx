@@ -1,6 +1,6 @@
 import { Routes, Route, Link, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
-import Calculator from './pages/Calculator'
+import PriceList from './pages/PriceList'
 import Booking from './pages/Booking'
 import BookingConfirmation from './pages/BookingConfirmation'
 import StatusLookup from './pages/StatusLookup'
@@ -12,9 +12,9 @@ export default function App() {
   const location = useLocation()
 
   const navLinks = [
-    { to: '/kalkylator', label: 'Priskalkylator' },
+    { to: '/prislista', label: 'Prislista' },
     { to: '/boka', label: 'Boka service' },
-    { to: '/status', label: 'Spara order' },
+    { to: '/status', label: 'Spåra order' },
     { to: '/verkstad', label: 'Verkstad' },
   ]
 
@@ -39,7 +39,7 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/kalkylator" element={<Calculator />} />
+        <Route path="/prislista" element={<PriceList />} />
         <Route path="/boka" element={<Booking />} />
         <Route path="/boka/bekraftelse" element={<BookingConfirmation />} />
         <Route path="/status" element={<StatusLookup />} />
