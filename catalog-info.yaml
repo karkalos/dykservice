@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dykservice
+  description: Diving services application
+spec:
+  type: service
+  owner: stasio-ab
+  lifecycle: experimental
+  system: stasio
